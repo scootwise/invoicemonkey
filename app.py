@@ -26,7 +26,9 @@ def health():
 def auth_quickbooks():
     """Start OAuth flow"""
     user_id = request.args.get('user_id', 'test-user-123')
-    # Pass user_id via OAuth state parameter (survives redirects)
+    # NOTE: OAuth session issue - user_id gets lost in production
+    # For now, OAuth creates user 'unknown'. Use manual QB connect endpoint instead.
+    session['user_id'] = user_id
     auth_url = qb_auth.get_auth_url(state=user_id)
     return redirect(auth_url)
 
