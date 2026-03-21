@@ -216,12 +216,18 @@
             font-size: 0.9em;
         }
         
-        .demo-link {
+        .mascot {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: bounce-wave 2s ease-in-out infinite;
             display: inline-block;
-            margin-top: 20px;
-            color: #fff;
-            text-decoration: underline;
-            opacity: 0.9;
+        }
+        
+        @keyframes bounce-wave {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(5deg); }
         }
         
         @media (max-width: 600px) {
@@ -238,6 +244,7 @@
 <body>
     <div class="container">
         <div class="hero">
+            <div class="mascot">🐵</div>
             <h1>Stop Typing Invoices Into QuickBooks</h1>
             <p>Forward invoice emails. We extract the data. It appears in QuickBooks. Takes 30 seconds, not 5 minutes.</p>
             <a href="#signup" class="cta-button">Start Free Trial →</a>
