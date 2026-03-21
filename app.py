@@ -113,6 +113,8 @@ def connect_qb_manual():
     db_session.commit()
     
     return {'status': 'success', 'message': 'QB connected manually', 'user_id': user_id}
+
+@app.route('/api/test-extract', methods=['POST'])
 def test_extract():
     """Test extraction without QB posting"""
     from extraction.engine import LlamaParseExtractor, InvoiceValidator
