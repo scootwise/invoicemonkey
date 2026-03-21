@@ -1,6 +1,6 @@
 Flask==3.0.0
 gunicorn==21.2.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
 intuit-oauth==1.2.4
 cryptography==42.0.0
 SQLAlchemy==2.0.25
