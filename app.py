@@ -67,7 +67,52 @@ def callback_quickbooks():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}, 500
 
-@app.route('/api/test-extract', methods=['POST'])
+@app.route('/api/create-user', methods=['POST'])
+def create_user():
+    """Create a test user directly"""
+    user_id = request.json.get('user_id', 'test123')
+    email = request.json.get('email', f"user-{user_id}@example.com")
+    
+    db_session = Session()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    
+    if not user:
+        user = User(id=user_id, email=email)
+        db_session.add(user)
+        db_session.commit()
+        return {'status': 'created', 'user_id': user_id, 'email': email}
+    
+    return {'status': 'exists', 'user_id': user_id, 'email': email}
+
+@app.route('/api/connect-qb', methods=['POST'])
+def connect_qb_manual():
+    """Manually set QB credentials for testing"""
+    user_id = request.json.get('user_id')
+    realm_id = request.json.get('realm_id')
+    access_token = request.json.get('access_token')
+    refresh_token = request.json.get('refresh_token')
+    
+    if not user_id:
+        return {'error': 'user_id required'}, 400
+    
+    db_session = Session()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    
+    if not user:
+        return {'error': 'User not found'}, 404
+    
+    # Encrypt tokens
+    access_enc, refresh_enc = qb_auth.encrypt_tokens(access_token, refresh_token)
+    
+    user.qb_connected = True
+    user.qb_realm_id = realm_id
+    user.qb_access_token_enc = access_enc
+    user.qb_refresh_token_enc = refresh_enc
+    user.qb_expires_in = 3600
+    user.qb_token_updated_at = datetime.utcnow()
+    db_session.commit()
+    
+    return {'status': 'success', 'message': 'QB connected manually', 'user_id': user_id}
 def test_extract():
     """Test extraction without QB posting"""
     from extraction.engine import LlamaParseExtractor, InvoiceValidator
