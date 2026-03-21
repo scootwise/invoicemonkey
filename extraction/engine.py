@@ -68,18 +68,22 @@ class LlamaParseExtractor:
     
     def _extract_total(self, text: str) -> float:
         patterns = [
-            r'(?:total|amount due|grand total)[:\s]*[$\£\€]?\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
+            r'(?:total|amount due|grand total|balance|sum)[:\s]*[$\£\€]?\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
+            r'(?:^|\n)\s*(?:Total)[:\s]*[$\£\€]?\s*(\d{1,3}(?:,\d{3})*\.?\d{0,2})',
+            r'Total\s+[$\£\€]?(\d{1,3}(?:,\d{3})*\.\d{2})',
+            r'[$\£\€]?(\d{1,3}(?:,\d{3})*\.\d{2})\s*(?:Total|USD)?\s*$',
         ]
         amounts = []
         for pattern in patterns:
-            matches = re.findall(pattern, text, re.IGNORECASE)
+            matches = re.findall(pattern, text, re.IGNORECASE | re.MULTILINE)
             for match in matches:
                 try:
                     amount = float(match.replace(',', ''))
-                    if amount > 0:
+                    if amount > 0.01:  # Filter out tiny amounts
                         amounts.append(amount)
                 except:
                     pass
+        # Return largest amount (usually the total)
         return max(amounts) if amounts else 0.0
     
     def _extract_tax(self, text: str) -> float:
