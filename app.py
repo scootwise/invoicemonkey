@@ -19,8 +19,9 @@ archive = PDFArchive()
 qb_auth = QuickBooksAuth()
 
 @app.route('/')
-def health():
-    return {'status': 'Invoice Parser API', 'version': '0.1.0'}
+def landing():
+    """Landing page"""
+    return send_file('templates/index.html')
 
 @app.route('/auth/quickbooks')
 def auth_quickbooks():
