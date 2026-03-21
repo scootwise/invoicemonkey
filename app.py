@@ -21,8 +21,13 @@ qb_auth = QuickBooksAuth()
 
 @app.route('/')
 def landing():
-    """Landing page"""
+    """Landing page with demo features"""
     return send_file('templates/index.html')
+
+@app.route('/demo')
+def demo():
+    """Interactive demo page"""
+    return send_file('templates/demo.html')
 
 @app.route('/auth/quickbooks')
 def auth_quickbooks():
