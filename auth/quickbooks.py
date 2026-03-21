@@ -16,10 +16,10 @@ class QuickBooksAuth:
             redirect_uri=QB_REDIRECT_URI
         )
     
-    def get_auth_url(self):
+    def get_auth_url(self, state=None):
         """Generate OAuth URL for user to connect QB"""
         scopes = [Scopes.ACCOUNTING]
-        return self.client.get_authorization_url(scopes)
+        return self.client.get_authorization_url(scopes, state=state)
     
     def exchange_code(self, auth_code, realm_id):
         """Exchange auth code for tokens"""

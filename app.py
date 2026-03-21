@@ -26,8 +26,8 @@ def health():
 def auth_quickbooks():
     """Start OAuth flow"""
     user_id = request.args.get('user_id', 'test-user-123')
-    session['user_id'] = user_id  # Store in Flask session
-    auth_url = qb_auth.get_auth_url()
+    # Pass user_id via OAuth state parameter (survives redirects)
+    auth_url = qb_auth.get_auth_url(state=user_id)
     return redirect(auth_url)
 
 @app.route('/callback/quickbooks')
@@ -35,7 +35,8 @@ def callback_quickbooks():
     """OAuth callback"""
     auth_code = request.args.get('code')
     realm_id = request.args.get('realmId')
-    user_id = session.get('user_id', 'unknown')
+    # Extract user_id from OAuth state parameter (reliable across redirects)
+    user_id = request.args.get('state', 'unknown')
     
     try:
         tokens = qb_auth.exchange_code(auth_code, realm_id)
@@ -58,9 +59,6 @@ def callback_quickbooks():
         user.qb_expires_in = tokens['expires_in']
         user.qb_token_updated_at = datetime.utcnow()
         db_session.commit()
-        
-        # Clear session user_id
-        session.pop('user_id', None)
         
         return {'status': 'success', 'message': 'QuickBooks connected', 'user_id': user_id}
         
