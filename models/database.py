@@ -53,6 +53,10 @@ class Invoice(Base):
     line_items = Column(JSON)
     raw_extraction = Column(JSON)
     
+    # Review/approval workflow
+    review_mode = Column(String(50), default='direct')  # 'direct' or 'queue'
+    review_notes = Column(String(500))
+    
     qb_bill_id = Column(String(255))
     qb_posted_at = Column(DateTime)
     

@@ -217,9 +217,12 @@ def list_invoices():
 
 @app.route('/api/invoice-to-qb', methods=['POST'])
 def invoice_to_qb():
-    """Full pipeline: PDF -> Archive -> Extraction -> QuickBooks"""
+    """Full pipeline: PDF -> Archive -> Extraction -> QuickBooks (or Queue)"""
     from extraction.engine import LlamaParseExtractor, InvoiceValidator
     from posting.quickbooks import QuickBooksPoster
+    
+    # Get review mode: 'direct' (post immediately) or 'queue' (hold for approval)
+    review_mode = request.args.get('review_mode', 'direct')
     
     user_id = request.args.get('user_id', 'test123')
     
@@ -276,7 +279,25 @@ def invoice_to_qb():
         invoice.invoice_date = _parse_date(extracted.get('invoice_date'))
         invoice.due_date = _parse_date(extracted.get('due_date'))
         invoice.line_items = extracted.get('line_items')
+        
+        # Check review mode
+        if review_mode == 'queue':
+            # Save to approval queue
+            invoice.status = 'pending_approval'
+            invoice.review_mode = 'queue'
+            db_session.commit()
+            
+            return {
+                'status': 'pending_approval',
+                'invoice_id': invoice.id,
+                'extracted': extracted,
+                'archive_url': archive_result.get('url'),
+                'message': 'Invoice saved for review. Approve in dashboard to post to QuickBooks.'
+            }
+        
+        # Direct mode: Post immediately
         invoice.status = 'extracted'
+        invoice.review_mode = 'direct'
         db_session.commit()
         
         # Post to QuickBooks
@@ -313,6 +334,83 @@ def invoice_to_qb():
         invoice.error_message = str(e)
         db_session.commit()
         return {'error': str(e)}, 500
+
+@app.route('/api/approvals', methods=['GET'])
+def list_pending_approvals():
+    """List invoices pending approval for a user"""
+    user_id = request.args.get('user_id', 'test123')
+    
+    db_session = Session()
+    invoices = db_session.query(Invoice).filter_by(
+        user_id=user_id,
+        status='pending_approval'
+    ).all()
+    
+    return {
+        'invoices': [{
+            'id': inv.id,
+            'vendor': inv.vendor_name,
+            'total': inv.total_amount,
+            'filename': inv.filename,
+            'created_at': inv.created_at.isoformat() if inv.created_at else None,
+            'line_items': inv.line_items
+        } for inv in invoices]
+    }
+
+@app.route('/api/approve', methods=['POST'])
+def approve_invoice():
+    """Approve pending invoice and post to QuickBooks"""
+    from posting.quickbooks import QuickBooksPoster
+    
+    invoice_id = request.json.get('invoice_id')
+    user_id = request.json.get('user_id', 'test123')
+    
+    if not invoice_id:
+        return {'error': 'invoice_id required'}, 400
+    
+    db_session = Session()
+    invoice = db_session.query(Invoice).filter_by(id=invoice_id, user_id=user_id).first()
+    
+    if not invoice:
+        return {'error': 'Invoice not found'}, 404
+    
+    if invoice.status != 'pending_approval':
+        return {'error': 'Invoice not in pending approval status'}, 400
+    
+    user = db_session.query(User).filter_by(id=user_id).first()
+    if not user or not user.qb_connected:
+        return {'error': 'QuickBooks not connected'}, 400
+    
+    # Build extracted data from invoice record
+    extracted = {
+        'vendor_name': invoice.vendor_name,
+        'total': invoice.total_amount,
+        'invoice_date': invoice.invoice_date.strftime('%Y-%m-%d') if invoice.invoice_date else None,
+        'due_date': invoice.due_date.strftime('%Y-%m-%d') if invoice.due_date else None,
+        'line_items': invoice.line_items
+    }
+    
+    # Post to QuickBooks
+    poster = QuickBooksPoster(user)
+    result = poster.post_bill(extracted)
+    
+    if result['status'] == 'posted':
+        invoice.status = 'posted'
+        invoice.qb_bill_id = result['qb_bill_id']
+        invoice.qb_posted_at = datetime.utcnow()
+        db_session.commit()
+        
+        return {
+            'status': 'approved_and_posted',
+            'invoice_id': invoice.id,
+            'qb_bill_id': result['qb_bill_id'],
+            'message': 'Invoice approved and posted to QuickBooks'
+        }
+    else:
+        return {
+            'status': 'error',
+            'message': result['message']
+        }, 500
 
 @app.route('/api/archive', methods=['GET'])
 def list_archive():
