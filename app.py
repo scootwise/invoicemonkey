@@ -26,7 +26,7 @@ def landing():
 
 @app.route('/demo')
 def demo():
-    """Interactive demo page"""
+    """Interactive demo page - v1"""
     return send_file('templates/demo.html')
 
 @app.route('/auth/quickbooks')
