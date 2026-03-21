@@ -19,13 +19,12 @@ class QuickBooksAuth:
     def get_auth_url(self, state=None):
         """Generate OAuth URL for user to connect QB"""
         scopes = [Scopes.ACCOUNTING]
-        try:
-            return self.client.get_authorization_url(scopes, state=state)
-        except TypeError:
-            # Fallback if intuitlib doesn't support state parameter
-            import logging
-            logging.warning(f"intuitlib doesn't support state, user_id will be: {state}")
-            return self.client.get_authorization_url(scopes)
+        # Build URL manually to ensure state is included
+        import urllib.parse
+        base_url = self.client.get_authorization_url(scopes)
+        if state:
+            base_url += f"&state={urllib.parse.quote(state)}"
+        return base_url
     
     def exchange_code(self, auth_code, realm_id):
         """Exchange auth code for tokens"""
