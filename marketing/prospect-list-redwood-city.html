@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redwood City Business Prospects</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0.5in;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            font-size: 10pt;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        .section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #667eea;
+        }
+        .business-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .business-name {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .business-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .meta-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+        .pain-points {
+            margin: 10px 0;
+        }
+        .pain-points h4 {
+            font-size: 0.9em;
+            color: #dc2626;
+            margin-bottom: 5px;
+        }
+        .pain-points ul {
+            margin-left: 18px;
+            font-size: 0.9em;
+        }
+        .pain-points li {
+            margin-bottom: 3px;
+        }
+        .approach {
+            background: #f0fdf4;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .approach h4 {
+            font-size: 0.9em;
+            color: #16a34a;
+            margin-bottom: 5px;
+        }
+        .approach p {
+            font-size: 0.9em;
+            margin: 0;
+        }
+        .hook {
+            background: #fef3c7;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-style: italic;
+            font-size: 0.9em;
+            color: #92400e;
+        }
+        .script-section {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+        .script-section h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+        .script-block {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .script-block h3 {
+            font-size: 1em;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        .script-block p {
+            font-style: italic;
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #667eea;
+        }
+        .script-block ul {
+            margin-left: 20px;
+            font-size: 0.9em;
+        }
+        .script-block li {
+            margin-bottom: 5px;
+        }
+        .tracking-section {
+            margin-top: 30px;
+        }
+        .tracking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .tracking-table th {
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .tracking-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.85em;
+        }
+        .groups-section {
+            margin-top: 25px;
+        }
+        .groups-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .group-item {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .areas-note {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 0.9em;
+        }
+        .areas-note strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Redwood City Business Prospects</h1>
+        <p>Invoice Auto-Entry for QuickBooks • Redwood City, CA 94061</p>
+    </div>
+    
+    <div class="areas-note">
+        <strong>Target Areas:</strong> Downtown Redwood City (Broadway, Main St), Middlefield Road Corridor, Woodside Plaza, 
+        Industrial areas near Seaport Blvd, El Camino Real businesses, Farm Hill Blvd corridor
+    </div>
+    
+    <div class="section">
+        <div class="section-title">1. Coffee Shops / Cafes</div>
+        <div class="business-card">
+            <div class="business-name">Downtown Coffee Shops (Broadway Area)</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Independent cafes near courthouse/Caltrain</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Daily food/beverage deliveries from multiple vendors</li>
+                    <li>Invoice pile-up during busy morning rushes</li>
+                    <li>Office workers expect quick service, no time for paperwork</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Morning visit (8-9am), buy coffee, chat with owner during slower period (9:30-10am)</p>
+            </div>
+            <div class="hook">"How many vendor invoices do you get each week from coffee roasters, bakeries, dairy suppliers?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Sequoia Station Area Cafes</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Commuter-focused spots near Caltrain</span>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Mid-morning visit, ask about peak hours vs paperwork time</p>
+            </div>
+            <div class="hook">"When do you find time to enter all the supplier invoices into QuickBooks?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">2. Auto Repair Shops</div>
+        <div class="business-card">
+            <div class="business-name">Middlefield Road Auto Shops</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Independent mechanics, smog shops, brake shops</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Parts invoices from NAPA, O'Reilly, AutoZone, dealers</li>
+                    <li>High volume of small parts purchases</li>
+                    <li>Oil, filters, brake pads - constant reordering</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Drop in during slow afternoon (2-4pm), look for owner working on cars</p>
+            </div>
+            <div class="hook">"Do you have someone typing all these parts invoices into QuickBooks, or does it pile up?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">European/Import Specialists</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> BMW, Mercedes, Audi specialists (Redwood City has several)</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Expensive parts from specialized distributors</li>
+                    <li>Import/export documentation + invoices</li>
+                    <li>Higher invoice values = more critical to track</li>
+                </ul>
+            </div>
+            <div class="hook">"With these high-value parts invoices, ever worry about losing one before it gets entered?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">3. Restaurants / Bars</div>
+        <div class="business-card">
+            <div class="business-name">Broadway Restaurants (Downtown)</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Downtown dining spots, courthouse lunch crowd</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Daily produce, meat, seafood deliveries</li>
+                    <li>Alcohol distributors (multiple vendors)</li>
+                    <li>Kitchen equipment repairs and maintenance</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Visit before lunch rush (10:30am), ask for manager/owner</p>
+            </div>
+            <div class="hook">"What happens if invoices don't get entered for a week during your busy periods?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">El Camino Real Casual Dining</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Quick-service, family restaurants along El Camino</span>
+            </div>
+            <div class="hook">"Who handles the bookkeeping when you're managing the floor during dinner rush?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">4. Property Management</div>
+        <div class="business-card">
+            <div class="business-name">Redwood City Property Management Firms</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Companies managing Peninsula apartment buildings, HOA management</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Maintenance invoices from contractors across multiple properties</li>
+                    <li>Landscaping, plumbing, electrical repairs</li>
+                    <li>HOA assessment tracking and vendor payments</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>LinkedIn search for "property manager Redwood City", cold email with specific value prop</p>
+            </div>
+            <div class="hook">"How do you track all the maintenance invoices across your properties? Ever lose one?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">HOA Management Companies</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Management for condo complexes, townhome communities</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Monthly landscaping invoices</li>
+                    <li>Pool maintenance, common area repairs</li>
+                    <li>Multiple vendors per property</li>
+                </ul>
+            </div>
+            <div class="hook">"With multiple HOAs to manage, how do you keep vendor invoices organized?"</div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+    
+    <div class="section">
+        <div class="section-title">5. Home Services (HVAC/Plumbing/Electrical)</div>
+        <div class="business-card">
+            <div class="business-name">Peninsula HVAC & Plumbing</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Companies serving Redwood City, Atherton, Menlo Park homes</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Parts invoices from Ferguson, specialized suppliers</li>
+                    <li>Equipment purchases (furnaces, water heaters)</li>
+                    <li>Van/truck maintenance expenses</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Yelp search "HVAC Redwood City", call to speak with owner</p>
+            </div>
+            <div class="hook">"Is bookkeeping keeping you from more billable hours in the field?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Electrical Contractors</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Residential/commercial electricians serving Peninsula</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Wire, panels, fixtures from electrical supply houses</li>
+                    <li>Permit fees, inspection costs</li>
+                    <li>Multiple job sites to track expenses</li>
+                </ul>
+            </div>
+            <div class="hook">"With multiple job sites, how do you keep all the material invoices organized?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">6. Retail Boutiques</div>
+        <div class="business-card">
+            <div class="business-name">Downtown Redwood City Retail</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Broadway, Main St boutiques, specialty shops</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Inventory purchase invoices</li>
+                    <li>Seasonal ordering spikes</li>
+                    <li>Store fixture and display expenses</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Shop as customer, strike up conversation with owner during slow period</p>
+            </div>
+            <div class="hook">"How do you handle all the vendor paperwork when you're managing the floor?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Home Decor / Furniture</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Independent furniture stores, home goods on El Camino</span>
+            </div>
+            <div class="hook">"With furniture deliveries weekly, do invoices ever get buried?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">7. Medical / Dental / Wellness</div>
+        <div class="business-card">
+            <div class="business-name">Medical Offices (Woodside Plaza Area)</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Small practices 1-3 providers, dental offices, urgent care</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Medical equipment invoices (expensive, needs tracking)</li>
+                    <li>Supply orders (gloves, masks, disposables)</li>
+                    <li>Software subscriptions (EMR, scheduling)</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Call office manager, ask for 5 minutes to discuss bookkeeping efficiency</p>
+            </div>
+            <div class="hook">"Would less paperwork time mean more patient appointment slots?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Dental Practices</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Family dentists, orthodontists on Farm Hill, Alameda</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Dental supply houses (Henry Schein, Patterson)</li>
+                    <li>Equipment maintenance contracts</li>
+                    <li>High volume of small supply orders</li>
+                </ul>
+            </div>
+            <div class="hook">"Between patient appointments, when do you find time for invoice entry?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">8. Landscaping / Lawn Services</div>
+        <div class="business-card">
+            <div class="business-name">Peninsula Landscaping Companies</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Companies with crews serving Redwood City, Atherton, Menlo Park</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Fuel invoices (trucks, mowers, blowers)</li>
+                    <li>Equipment repairs (weekly maintenance)</li>
+                    <li>Plant nursery purchases, mulch, soil</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Look for landscaping trucks at gas stations, Home Depot, or driving around</p>
+            </div>
+            <div class="hook">"Are you losing fuel and parts invoices before they get to your bookkeeper?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">9. Construction / Remodeling</div>
+        <div class="business-card">
+            <div class="business-name">General Contractors (Peninsula)</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Kitchen/bath remodelers, ADU builders, home addition specialists</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Material invoices from multiple suppliers (lumber, tile, fixtures)</li>
+                    <li>Subcontractor bills (electricians, plumbers, painters)</li>
+                    <li>Change orders and permit fees</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Home Depot parking lot (Seaport Blvd), job sites in residential areas</p>
+            </div>
+            <div class="hook">"What if invoices from your suppliers auto-posted to QB by job?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Specialty Contractors</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Tile installers, painters, flooring companies</span>
+            </div>
+            <div class="hook">"With 5-10 active jobs, how do you keep material invoices organized per project?"</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">10. Professional Services</div>
+        <div class="business-card">
+            <div class="business-name">CPA / Accounting Firms</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Small CPA practices in Redwood City (they understand the problem)</span>
+            </div>
+            <div class="pain-points">
+                <h4>Pain Points</h4>
+                <ul>
+                    <li>Software subscriptions (QuickBooks, tax prep, CRM)</li>
+                    <li>Professional development, licensing</li>
+                    <li>Office rent, utilities</li>
+                </ul>
+            </div>
+            <div class="approach">
+                <h4>Approach</h4>
+                <p>Chamber of Commerce events, professional networking groups</p>
+            </div>
+            <div class="hook">"As a CPA, if you could automate client invoice entry, what would that be worth?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Law Offices</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Small law firms (family law, real estate, business)</span>
+            </div>
+            <div class="hook">"Is manual invoice entry worth your billable rate?"</div>
+        </div>
+        
+        <div class="business-card">
+            <div class="business-name">Marketing / Creative Agencies</div>
+            <div class="business-meta">
+                <span class="meta-item"><span class="meta-label">Target:</span> Small agencies near downtown, web design shops</span>
+            </div>
+            <div class="hook">"Would you rather bill clients or type in SaaS subscription invoices?"</div>
+        </div>
+    </div>
+    
+    <div class="script-section">
+        <h2>Cold Approach Script — Redwood City Specific</h2>
+        
+        <div class="script-block">
+            <h3>Opening</h3>
+            <p>"Hi, I'm [Name]. I live in the area and I'm building a tool that reads invoice emails and posts them straight to QuickBooks — no typing. I'm testing it with Redwood City businesses. Mind if I ask how you handle invoices now?"</p>
+        </div>
+        
+        <div class="script-block">
+            <h3>Discovery Questions</h3>
+            <ul>
+                <li>"How many invoices do you get per week from [vendors/suppliers]?"</li>
+                <li>"Who enters them into QuickBooks — you or someone else?"</li>
+                <li>"How long does that usually take?"</li>
+                <li>"Ever lose an invoice before it got entered?"</li>
+                <li>"What's your biggest headache with bookkeeping?"</li>
+                <li>"How do you handle invoices that come in by email vs. mail?"</li>
+            </ul>
+        </div>
+        
+        <div class="script-block">
+            <h3>The Ask</h3>
+            <p>"Would you be open to trying it for free for a week? I just need you to forward 5-10 invoice emails to a test address and tell me what breaks. I'm local, so I can come by if you have any questions."</p>
+        </div>
+        
+        <div class="script-block">
+            <h3>Redwood City Specific Hooks</h3>
+            <ul>
+                <li>"I know rents are high here — saving time on bookkeeping might help you focus on revenue."</li>
+                <li>"Between serving downtown foot traffic and managing paperwork, where does the time go?"</li>
+                <li>"I noticed a lot of Peninsula businesses struggle with the same thing — invoices piling up."</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="tracking-section">
+        <h2 style="color: #667eea; font-size: 1.3em; margin-bottom: 15px;">Tracking Sheet</h2>
+        <table class="tracking-table">
+            <tr>
+                <th>Business</th>
+                <th>Location/Area</th>
+                <th>Contact</th>
+                <th>Date</th>
+                <th>Result</th>
+                <th>Notes</th>
+            </tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+        </table>
+    </div>
+    
+    <div class="groups-section">
+        <h2 style="color: #667eea; font-size: 1.3em; margin-bottom: 15px;">Redwood City Business Groups to Join</h2>
+        <div class="groups-list">
+            <div class="group-item">Redwood City Chamber of Commerce</div>
+            <div class="group-item">Menlo Park Chamber (neighboring)</div>
+            <div class="group-item">San Mateo County EDA</div>
+            <div class="group-item">Downtown Redwood City Business Association</div>
+            <div class="group-item">Nextdoor for Business (Redwood City)</div>
+            <div class="group-item">BNI Peninsula Chapters</div>
+            <div class="group-item">Silicon Valley SCORE Mentoring</div>
+            <div class="group-item">Yelp Community (local events)</div>
+        </div>
+    </div>
+    
+    <div class="areas-note" style="margin-top: 25px;">
+        <strong>Target Zip Codes:</strong> 94061 (Redwood City core), 94062 (Woodside area), 94063 (North Fair Oaks), 
+        94065 (Port of Redwood City), 94025 (Menlo Park - nearby), 94070 (San Carlos - nearby)
+    </div>
+</body>
+</html>

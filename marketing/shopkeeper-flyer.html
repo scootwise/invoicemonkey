@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice Auto-Entry Flyer</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 0;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .page {
+            width: 8.5in;
+            height: 11in;
+            padding: 0.5in;
+            position: relative;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .header h2 {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #667eea;
+        }
+        .problem-solution {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .box {
+            flex: 1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+        .solution {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+        .box h3 {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .problem h3 { color: #dc2626; }
+        .solution h3 { color: #16a34a; }
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .feature-icon {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            font-size: 0.95em;
+        }
+        .pricing-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .pricing-box h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .price {
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 10px;
+            font-size: 1.2em;
+        }
+        .step-text {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .testimonial {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+        .testimonial-author {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9em;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0.5in;
+            left: 0.5in;
+            right: 0.5in;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        .footer h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .contact {
+            font-size: 1.1em;
+            margin: 10px 0;
+        }
+        .limited {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+        ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>Invoice Auto-Entry</h1>
+            <h2>For QuickBooks Users</h2>
+        </div>
+        
+        <div class="problem-solution">
+            <div class="box problem">
+                <h3>❌ The Problem</h3>
+                <ul>
+                    <li>Invoices pile up in your email</li>
+                    <li>Manual typing into QuickBooks</li>
+                    <li>5-10 minutes per invoice</li>
+                    <li>Easy to lose or forget invoices</li>
+                </ul>
+            </div>
+            <div class="box solution">
+                <h3>✅ The Solution</h3>
+                <ul>
+                    <li>Forward invoice emails to us</li>
+                    <li>We extract data automatically</li>
+                    <li>30 seconds, zero typing</li>
+                    <li>Every invoice saved & encrypted</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">How It Works</div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Forward invoice email</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-text">We extract the data</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Appears in QuickBooks</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">PDF archived securely</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">What You Get</div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-icon">⚡</span>
+                    <span class="feature-text"><strong>Zero Data Entry</strong> — We read the PDF, you approve in QB</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🔒</span>
+                    <span class="feature-text"><strong>Never Lose an Invoice</strong> — Encrypted archive, searchable</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">📱</span>
+                    <span class="feature-text"><strong>Works Anywhere</strong> — Forward from phone, desktop, any email</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">✅</span>
+                    <span class="feature-text"><strong>Any Vendor</strong> — No integration needed, works with all PDFs</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="testimonial">
+            <p>"I went from 2 hours of bookkeeping to 10 minutes. This paid for itself in the first month."</p>
+            <div class="testimonial-author">— Sarah K., Coffee Shop Owner, Roseville</div>
+        </div>
+        
+        <div class="pricing-box">
+            <h3>Beta Pricing</h3>
+            <div class="price">FREE for 30 Days</div>
+            <p style="margin-top: 10px;">Then $49/month • Unlimited Invoices • Cancel Anytime</p>
+        </div>
+        
+        <div class="footer">
+            <h3>Start Your Free Trial</h3>
+            <div class="contact">
+                📧 [YOUR EMAIL] | 📱 [YOUR PHONE]
+            </div>
+            <div class="limited">
+                Limited Beta Spots Available • Local Businesses Only
+            </div>
+        </div>
+    </div>
+</body>
+</html>
