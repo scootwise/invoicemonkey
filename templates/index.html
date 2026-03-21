@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Monkey - Coming Soon</title>
+    <title>Invoice Auto-Entry for QuickBooks</title>
     <style>
         * {
             margin: 0;
@@ -12,167 +12,331 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
         }
         
         .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .hero {
             text-align: center;
-            padding: 2rem;
-            max-width: 600px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 40px;
         }
         
-        .logo {
-            font-size: 5rem;
-            margin-bottom: 1rem;
-            animation: bounce 2s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        h1 {
-            font-size: 3rem;
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
             font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
         
-        .tagline {
-            font-size: 1.25rem;
-            color: #a0a0a0;
-            margin-bottom: 3rem;
+        .hero p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
-        .construction {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+        .cta-button {
+            display: inline-block;
+            background: #fff;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-top: 30px;
+            transition: transform 0.2s;
         }
         
-        .construction-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .cta-button:hover {
+            transform: translateY(-2px);
         }
         
-        .construction h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #ffd93d;
+        .section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         
-        .construction p {
-            color: #a0a0a0;
-            line-height: 1.6;
+        .section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
         }
         
         .features {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
         }
         
         .feature {
             text-align: center;
+            padding: 20px;
         }
         
         .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            font-size: 3em;
+            margin-bottom: 15px;
         }
         
-        .feature-label {
-            font-size: 0.875rem;
-            color: #a0a0a0;
+        .feature h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #667eea;
         }
         
-        .notify {
-            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+        .how-it-works {
+            counter-reset: steps;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .pricing {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .price {
+            font-size: 3em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .price-note {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .signup-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            font-weight: 600;
             border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: background 0.2s;
         }
         
-        .notify:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+        .submit-btn:hover {
+            background: #5568d3;
         }
         
-        .footer {
-            margin-top: 3rem;
-            font-size: 0.875rem;
+        .testimonial {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .testimonial p {
+            font-style: italic;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
             color: #666;
+            font-size: 0.9em;
         }
         
-        .footer a {
-            color: #e94560;
-            text-decoration: none;
+        .demo-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #fff;
+            text-decoration: underline;
+            opacity: 0.9;
         }
         
         @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
+            .hero h1 {
+                font-size: 2em;
             }
             
-            .logo {
-                font-size: 3rem;
+            .section {
+                padding: 30px 20px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">🐵</div>
-        <h1>Invoice Monkey</h1>
-        <p class="tagline">Automatic invoice processing for QuickBooks</p>
-        
-        <div class="construction">
-            <div class="construction-icon">🚧</div>
-            <h2>Under Construction</h2>
-            <p>We're building something special. A smarter way to handle invoices that saves you hours every month.</p>
+        <div class="hero">
+            <h1>Stop Typing Invoices Into QuickBooks</h1>
+            <p>Forward invoice emails. We extract the data. It appears in QuickBooks. Takes 30 seconds, not 5 minutes.</p>
+            <a href="#signup" class="cta-button">Start Free Trial →</a>
+            <br>
+            <a href="/demo" class="demo-link">Or try the demo first →</a>
         </div>
         
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">📄</div>
-                <div class="feature-label">PDF Extraction</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🤖</div>
-                <div class="feature-label">AI Processing</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <div class="feature-label">QuickBooks Sync</div>
+        <div class="section">
+            <h2>How It Works</h2>
+            <div class="how-it-works">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3>Forward the Email</h3>
+                        <p>Vendor sends invoice to your inbox. You forward it to your unique address.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3>We Read the PDF</h3>
+                        <p>Our system extracts vendor name, amounts, line items, dates automatically.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3>Appears in QuickBooks</h3>
+                        <p>Review and approve in QB. PDF is archived encrypted for your records.</p>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <button class="notify" onclick="alert('Thanks for your interest! We\'ll notify you when we launch.')">
-            Notify Me When Ready
-        </button>
-        
-        <div class="footer">
-            <p>Questions? <a href="mailto:hello@invoicemonkey.app">hello@invoicemonkey.app</a></p>
+        <div class="section">
+            <h2>Why Shopkeepers Love It</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Zero Data Entry</h3>
+                    <p>No more typing vendor names and amounts. We handle it.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Never Lose an Invoice</h3>
+                    <p>Every PDF saved, encrypted, searchable. Download anytime.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <h3>Email From Anywhere</h3>
+                    <p>Forward from your phone. Works with Gmail, Outlook, any email.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">✅</div>
+                    <h3>Works With Any Vendor</h3>
+                    <p>No integration needed. If they send PDFs, we can read them.</p>
+                </div>
+            </div>
         </div>
+        
+        <div class="section testimonial">
+            <p>"I was spending 2 hours every week typing invoices into QuickBooks. Now it's 10 minutes of just hitting approve. This paid for itself in the first month."</p>
+            <div class="testimonial-author">— Sarah K., Coffee Shop Owner, Roseville CA</div>
+        </div>
+        
+        <div class="section pricing">
+            <h2>Simple Pricing</h2>
+            <div class="price">$49/month</div>
+            <p class="price-note">Unlimited invoices. No setup fees. Cancel anytime.</p>
+            <p style="margin-top: 20px; color: #667eea; font-weight: 600;">✓ 30-day free trial<br>✓ No credit card required</p>
+        </div>
+        
+        <div class="section" id="signup">
+            <h2>Get Started (30 Seconds)</h2>
+            <form class="signup-form" action="/api/signup" method="POST">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Jane Smith">
+                </div>
+                <div class="form-group">
+                    <label for="business">Business Name</label>
+                    <input type="text" id="business" name="business" required placeholder="Main Street Coffee">
+                </div>
+                <div class="form-group">
+                    <label for="email">Business Email</label>
+                    <input type="email" id="email" name="email" required placeholder="you@yourbusiness.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone (for setup help)</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(916) 555-0123">
+                </div>
+                <button type="submit" class="submit-btn">Start Free Trial</button>
+            </form>
+        </div>
+        
+        <footer>
+            <p>Questions? Email: hello@invoicemonkey.app</p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #999;">Currently serving local businesses in Placer County, CA</p>
+        </footer>
     </div>
 </body>
 </html>

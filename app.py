@@ -29,6 +29,45 @@ def demo():
     """Interactive demo page - v1"""
     return send_file('templates/demo.html')
 
+@app.route('/api/signup', methods=['POST'])
+def signup():
+    """Handle free trial signup from landing page"""
+    name = request.form.get('name')
+    business = request.form.get('business')
+    email = request.form.get('email')
+    phone = request.form.get('phone')
+    
+    # Generate unique user_id from email
+    user_id = email.replace('@', '-').replace('.', '-')
+    
+    # Check if user exists
+    db_session = Session()
+    user = db_session.query(User).filter_by(id=user_id).first()
+    
+    if not user:
+        # Create trial user
+        user = User(
+            id=user_id,
+            email=email
+        )
+        db_session.add(user)
+        db_session.commit()
+        
+        # In production: Send welcome email, create QB setup link
+        # For now: Redirect to demo with user connected
+        return jsonify({
+            'status': 'success',
+            'message': 'Trial started! Redirecting to setup...',
+            'user_id': user_id,
+            'next_step': '/auth/quickbooks?user_id=' + user_id
+        })
+    
+    return jsonify({
+        'status': 'exists',
+        'message': 'You already have an account!',
+        'user_id': user_id
+    })
+
 @app.route('/auth/quickbooks')
 def auth_quickbooks():
     """Start OAuth flow"""

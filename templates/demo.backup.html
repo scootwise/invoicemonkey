@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Monkey - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 0.5rem;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .upload-zone {
+            border: 3px dashed rgba(233, 69, 96, 0.5);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: #e94560;
+            background: rgba(233, 69, 96, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text {
+            font-size: 1.25rem;
+            color: #a0a0a0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-hint {
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(233, 69, 96, 0.3);
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .results {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .results h2 {
+            color: #ffd93d;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .result-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .result-label {
+            font-size: 0.75rem;
+            color: #a0a0a0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .result-value.amount {
+            color: #4ade80;
+            font-size: 2rem;
+        }
+        
+        .line-items {
+            margin-top: 1.5rem;
+        }
+        
+        .line-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .line-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+        
+        .status-success {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+        }
+        
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🐵</div>
+        <h1>Invoice Monkey Demo</h1>
+    </div>
+    
+    <div class="container">
+        <div class="upload-zone" id="upload-zone">
+            <div class="upload-icon">📄</div>
+            <div class="upload-text">Drop your invoice PDF here</div>
+            <div class="upload-hint">or click to browse</div>
+            <input type="file" id="file-input" accept=".pdf">
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Extracting invoice data...</div>
+        </div>
+        
+        <div class="error-message" id="error"></div>
+        
+        <div class="results" id="results">
+            <h2>📊 Extraction Results</h2>
+            
+            <div class="result-card">
+                <div class="result-label">Vendor</div>
+                <div class="result-value" id="vendor">-</div>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-label">Total Amount</div>
+                <div class="result-value amount" id="total">-</div>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-label">Invoice Date</div>
+                <div class="result-value" id="invoice-date">-</div>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-label">Due Date</div>
+                <div class="result-value" id="due-date">-</div>
+            </div>
+            
+            <div class="result-card">
+                <div class="result-label">Line Items</div>
+                <div class="line-items" id="line-items"></div>
+            </div>
+            
+            <div class="status-badge status-success" id="status-badge">
+                ✅ Ready to post to QuickBooks
+            </div>
+            
+            <button class="btn" id="post-btn" onclick="postToQuickBooks()">
+                Post to QuickBooks
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+        const loading = document.getElementById('loading');
+        const results = document.getElementById('results');
+        const error = document.getElementById('error');
+        
+        let currentFile = null;
+        let extractedData = null;
+        
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) handleFile(files[0]);
+        });
+        
+        uploadZone.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+        
+        function handleFile(file) {
+            if (!file.name.endsWith('.pdf')) {
+                showError('Please upload a PDF file');
+                return;
+            }
+            
+            currentFile = file;
+            uploadZone.style.display = 'none';
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/api/test-extract', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+                
+                extractedData = data.extracted;
+                displayResults(data.extracted);
+            })
+            .catch(err => {
+                loading.style.display = 'none';
+                showError('Failed to extract: ' + err.message);
+            });
+        }
+        
+        function displayResults(data) {
+            document.getElementById('vendor').textContent = data.vendor_name || 'Unknown';
+            document.getElementById('total').textContent = '$' + (data.total || 0).toFixed(2);
+            document.getElementById('invoice-date').textContent = data.invoice_date || '-';
+            document.getElementById('due-date').textContent = data.due_date || '-';
+            
+            const lineItemsContainer = document.getElementById('line-items');
+            lineItemsContainer.innerHTML = '';
+            
+            if (data.line_items && data.line_items.length) {
+                data.line_items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'line-item';
+                    div.innerHTML = `
+                        <span>${item.description}</span>
+                        <span>$${item.amount.toFixed(2)}</span>
+                    `;
+                    lineItemsContainer.appendChild(div);
+                });
+            } else {
+                lineItemsContainer.innerHTML = '<div class="line-item"><span>No line items found</span></div>';
+            }
+            
+            results.style.display = 'block';
+        }
+        
+        function postToQuickBooks() {
+            if (!currentFile) return;
+            
+            const btn = document.getElementById('post-btn');
+            btn.textContent = 'Posting...';
+            btn.disabled = true;
+            
+            // Prompt for user_id (in real app, this would come from session)
+            const userId = prompt('Enter user ID (or use "demo"):', 'demo');
+            if (!userId) {
+                btn.textContent = 'Post to QuickBooks';
+                btn.disabled = false;
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', currentFile);
+            
+            fetch(`/api/invoice-to-qb?user_id=${encodeURIComponent(userId)}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('status-badge').textContent = 
+                        `✅ Posted to QuickBooks (Bill #${data.qb_bill_id})`;
+                    btn.textContent = 'Posted!';
+                } else if (data.error === 'QuickBooks not connected') {
+                    window.location.href = `/auth/quickbooks?user_id=${encodeURIComponent(userId)}`;
+                } else {
+                    showError(data.error || 'Failed to post');
+                    btn.textContent = 'Post to QuickBooks';
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                showError('Failed to post: ' + err.message);
+                btn.textContent = 'Post to QuickBooks';
+                btn.disabled = false;
+            });
+        }
+        
+        function showError(msg) {
+            error.textContent = msg;
+            error.style.display = 'block';
+            uploadZone.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
