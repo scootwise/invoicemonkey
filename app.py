@@ -29,6 +29,11 @@ def demo():
     """Interactive demo page - v1"""
     return send_file('templates/demo.html')
 
+@app.route('/api/ping', methods=['POST'])
+def ping():
+    """Simple test endpoint"""
+    return jsonify({'status': 'ok', 'message': 'pong'})
+
 @app.route('/api/signup', methods=['POST'])
 def signup():
     """Handle free trial signup from landing page"""
