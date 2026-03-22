@@ -459,6 +459,139 @@ def list_archive():
     return {'invoices': results}
 
 
+@app.route('/api/email-webhook', methods=['POST'])
+def email_webhook():
+    """Receive forwarded emails from Cloudflare Worker"""
+    try:
+        data = request.get_json() or {}
+        
+        user_id = data.get('userId')
+        from_email = data.get('from')
+        subject = data.get('subject')
+        attachments = data.get('attachments', [])
+        
+        if not user_id:
+            return {'error': 'userId required'}, 400
+        
+        # Find PDF attachments
+        pdf_attachments = [att for att in attachments if att.get('filename', '').endswith('.pdf')]
+        
+        if not pdf_attachments:
+            return {'error': 'No PDF attachment found'}, 400
+        
+        # Process first PDF
+        pdf = pdf_attachments[0]
+        pdf_content = pdf.get('content')  # Base64 encoded
+        filename = pdf.get('filename', 'invoice.pdf')
+        
+        if not pdf_content:
+            return {'error': 'Empty PDF content'}, 400
+        
+        # Decode base64 content
+        import base64
+        try:
+            pdf_bytes = base64.b64decode(pdf_content)
+        except Exception:
+            return {'error': 'Invalid PDF encoding'}, 400
+        
+        # Get or create user
+        db_session = Session()
+        user = db_session.query(User).filter_by(id=user_id).first()
+        
+        if not user:
+            # Auto-create user from email
+            user = User(
+                id=user_id,
+                email=from_email or f"{user_id}@invoicemonkey.app"
+            )
+            db_session.add(user)
+            db_session.commit()
+        
+        # Create invoice record
+        invoice = Invoice(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            filename=filename,
+            file_size=len(pdf_bytes),
+            status='processing'
+        )
+        db_session.add(invoice)
+        db_session.commit()
+        
+        # Store PDF
+        archive_result = archive.store_pdf(user_id, invoice.id, pdf_bytes, filename)
+        invoice.storage_key = archive_result['key']
+        invoice.storage_type = archive_result.get('storage_type', 'local')
+        db_session.commit()
+        
+        # Extract data
+        from extraction.engine import LlamaParseExtractor, InvoiceValidator
+        extractor = LlamaParseExtractor()
+        validator = InvoiceValidator()
+        
+        extracted = extractor.extract(pdf_bytes, filename)
+        is_valid, error = validator.validate(extracted)
+        
+        if not is_valid:
+            invoice.status = 'error'
+            invoice.error_message = error
+            db_session.commit()
+            return {'status': 'error', 'message': error}, 422
+        
+        # Update invoice
+        invoice.vendor_name = extracted.get('vendor_name')
+        invoice.total_amount = extracted.get('total')
+        invoice.invoice_date = _parse_date(extracted.get('invoice_date'))
+        invoice.due_date = _parse_date(extracted.get('due_date'))
+        invoice.status = 'extracted'
+        db_session.commit()
+        
+        # If QB connected, auto-post
+        if user.qb_connected:
+            from posting.quickbooks import QuickBooksPoster
+            poster = QuickBooksPoster()
+            
+            # Get decrypted token
+            access_token = qb_auth.decrypt_tokens(user.qb_access_token_enc, user.qb_refresh_token_enc)
+            
+            result = poster.create_bill(
+                access_token=access_token,
+                realm_id=user.qb_realm_id,
+                invoice_data=extracted,
+                pdf_attachment=pdf_bytes
+            )
+            
+            if result['success']:
+                invoice.qb_bill_id = result['qb_bill_id']
+                invoice.status = 'posted'
+                invoice.qb_posted_at = datetime.utcnow()
+                db_session.commit()
+                
+                return {
+                    'status': 'success',
+                    'invoice_id': invoice.id,
+                    'qb_bill_id': result['qb_bill_id'],
+                    'message': 'Invoice extracted and posted to QuickBooks'
+                }
+            else:
+                invoice.status = 'error'
+                invoice.error_message = result.get('message', 'QB posting failed')
+                db_session.commit()
+                return {'status': 'error', 'message': invoice.error_message}, 500
+        else:
+            return {
+                'status': 'success',
+                'invoice_id': invoice.id,
+                'message': 'Invoice extracted. QB not connected - manual review needed.',
+                'needs_qb_setup': True
+            }
+            
+    except Exception as e:
+        import traceback
+        print(f"Email webhook error: {str(e)}\n{traceback.format_exc()}")
+        return {'error': str(e)}, 500
+
+
 @app.route('/api/archive/download/<invoice_id>', methods=['GET'])
 def download_pdf(invoice_id):
     """Download archived PDF"""
