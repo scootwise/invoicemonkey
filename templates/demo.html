@@ -20,19 +20,22 @@
         }
         
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 60px;
             margin-bottom: 3rem;
+            gap: 15px;
         }
         
         .logo {
-            font-size: 4rem;
-            margin-bottom: 0.5rem;
-            animation: bounce 2s infinite;
+            width: 50px;
+            height: auto;
         }
         
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
         }
         
         h1 {
@@ -207,8 +210,8 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">🐵</div>
-        <h1>Invoice Monkey Demo</h1>
+        <img src="logo/Invoice Monkey logo 3.png" alt="Invoice Monkey" class="logo">
+        <span class="brand-name">Invoice Monkey Demo</span>
     </div>
     
     <div class="container">
