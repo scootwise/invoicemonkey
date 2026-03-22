@@ -459,9 +459,11 @@ def list_archive():
     return {'invoices': results}
 
 
-# Email webhook endpoint for Cloudflare Worker - v1.1
+# Email webhook endpoint - v1.2 - Force rebuild
 @app.route('/api/email-webhook', methods=['POST'])
 def email_webhook():
+    """Receive emails from Cloudflare Worker""
+    print("Email webhook called")  # Debug logging
     """Receive forwarded emails from Cloudflare Worker"""
     try:
         data = request.get_json() or {}
