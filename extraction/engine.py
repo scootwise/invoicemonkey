@@ -34,30 +34,63 @@ class LlamaParseExtractor:
     
     def _extract_vendor(self, text: str) -> str:
         lines = text.split('\n')[:40]
-        for line in lines:
+        
+        # Look for business name patterns in first 40 lines
+        for i, line in enumerate(lines):
             line = line.strip()
-            if any(x in line.lower() for x in ['inc', 'llc', 'ltd', 'corp']):
-                if len(line) > 3 and not line.startswith('$'):
-                    return line
-        match = re.search(r'(?:from|bill from)[:\s]+(.+)', text, re.IGNORECASE)
+            # Skip obvious non-vendor lines
+            if any(skip in line.lower() for skip in ['intuit', 'payment', 'inc (ipi)', 'license', 'www.', 'page 1']):
+                continue
+            # Look for business indicators
+            if any(x in line.lower() for x in ['inc', 'llc', 'ltd', 'corp', 'control', 'services']):
+                if len(line) > 5 and len(line) < 60 and not line.startswith('$') and not line.startswith('---'):
+                    # Verify it's not just "Control" by checking surrounding context
+                    if 'termite' in line.lower() or 'pest' in line.lower() or i > 5:
+                        return line
+        
+        # Look for patterns like email addresses with business names
+        match = re.search(r'([A-Z][A-Za-z0-9\s&]+(?:Inc|LLC|Ltd|Corp|Control|Services))\s+[\d,]+', text)
         if match:
             return match.group(1).strip()
-        for line in lines:
+            
+        # Look for lines before @email
+        match = re.search(r'([A-Z][A-Za-z0-9\s&]+)\s+[A-Z][A-Za-z0-9\s,]+USA\s*[a-z]+@[a-z]+', text)
+        if match:
+            return match.group(1).strip()
+        
+        # Fallback: Return first substantial line that looks like a name
+        for line in lines[10:]:  # Skip first 10 lines (headers)
             line = line.strip()
-            if len(line) > 3 and len(line) < 50:
-                return line
+            if len(line) > 10 and len(line) < 50 and not any(skip in line.lower() for skip in ['intuit', 'payment', 'terms', 'conditions', 'page', '---']):
+                if re.search(r'[A-Z]', line) and not line.startswith('$'):
+                    return line
+        
         return "Unknown Vendor"
     
     def _extract_invoice_number(self, text: str) -> str:
-        match = re.search(r'(?:invoice\s*(?:#|number|no)[:\s]*)([A-Z0-9\-]+)', text, re.IGNORECASE)
-        if match:
-            return match.group(1).strip()
+        patterns = [
+            r'(?:invoice|receipt|sales)\s*(?:#|number|no)[:\s]*([A-Z0-9\-]+)',
+            r'(?:receipt|sales)\s*[:\s]*([A-Z0-9\-]+)\s*(?:date|payment)',
+            r'(?:#|no)[:\s]*([A-Z0-9\-]+)',
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                return match.group(1).strip()
         return ""
     
     def _extract_invoice_date(self, text: str) -> str:
-        match = re.search(r'(?:invoice date)[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', text, re.IGNORECASE)
-        if match:
-            return match.group(1)
+        # Look for various date patterns
+        patterns = [
+            r'(?:date|invoice date|sales date)[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})',
+            r'date[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+            r'(\d{2}[/-]\d{2}[/-]\d{4})\s+(?:payment|method|total)',
+            r'date\s*(\d{1,2}[/-]\d{1,2}[/-]\d{4})',
+        ]
+        for pattern in patterns:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                return match.group(1)
         return ""
     
     def _extract_due_date(self, text: str) -> str:
@@ -104,14 +137,44 @@ class LlamaParseExtractor:
     def _extract_line_items(self, text: str) -> list:
         items = []
         lines = text.split('\n')
-        for line in lines:
+        
+        # Look for table-like sections with amounts
+        in_items_section = False
+        for i, line in enumerate(lines):
+            line = line.strip()
+            
+            # Skip header/footer lines
+            if any(skip in line.lower() for skip in ['total', 'subtotal', 'tax', 'balance due', 'payment method', 'amount']):
+                continue
+            
+            # Pattern 1: Description followed by amount at end
             match = re.search(r'(.+?)\s+(?:[$\£\€])?(\d{1,3}(?:,\d{3})*\.\d{2})\s*$', line)
             if match:
                 desc = match.group(1).strip()
                 amount = float(match.group(2).replace(',', ''))
-                if len(desc) > 5 and not any(x in desc.lower() for x in ['total', 'subtotal', 'tax', 'amount', 'rate', 'qty']):
+                # Filter out totals and headers
+                if len(desc) > 5 and amount > 0 and not any(x in desc.lower() for x in ['total', 'subtotal', 'tax', 'amount', 'rate', 'qty', 'description', 'service']):
                     items.append({'description': desc[:100], 'amount': amount})
-        return items[:20]
+                    continue
+            
+            # Pattern 2: Lines with "Custom Amount" or similar
+            match = re.search(r'(custom amount|service|description)\s*(.+?)\s*(?:[$\£\€])?(\d{1,3}(?:,\d{3})*\.?\d{0,2})\s*(?:[$\£\€])?(\d{1,3}(?:,\d{3})*\.\d{2})', line, re.IGNORECASE)
+            if match:
+                desc = match.group(2).strip() if len(match.group(2).strip()) > 3 else match.group(1)
+                amount = float(match.group(4).replace(',', ''))
+                if amount > 0 and 'total' not in desc.lower():
+                    items.append({'description': desc[:100], 'amount': amount})
+        
+        # Remove duplicates and limit
+        seen = set()
+        unique_items = []
+        for item in items:
+            key = (item['description'][:50], item['amount'])
+            if key not in seen:
+                seen.add(key)
+                unique_items.append(item)
+        
+        return unique_items[:20]
 
 
 class InvoiceValidator:
