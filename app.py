@@ -34,6 +34,25 @@ def ping():
     """Simple test endpoint"""
     return jsonify({'status': 'ok', 'message': 'pong'})
 
+@app.route('/api/debug-extract', methods=['POST'])
+def debug_extract():
+    """Debug extraction - shows raw data"""
+    from extraction.engine import LlamaParseExtractor
+    
+    if 'file' not in request.files:
+        return {'error': 'No file'}, 400
+    
+    file = request.files['file']
+    pdf_bytes = file.read()
+    
+    extractor = LlamaParseExtractor()
+    extracted = extractor.extract(pdf_bytes, file.filename)
+    
+    return jsonify({
+        'extracted': extracted,
+        'raw_text_preview': extracted.get('raw_text', '')[:500]
+    })
+
 @app.route('/api/signup', methods=['POST'])
 def signup():
     """Handle free trial signup from landing page"""
